@@ -1,8 +1,26 @@
-import { registerRootComponent } from 'expo';
+import React from 'react';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { useAuth } from './context/AuthContext';
+import { useThemeMode } from './context/ThemeContext';
+import Tabs from './navigation/Tabs';
+import AuthScreen from './screens/AuthScreen';
 
-import App from './App';
+export default function Index() {
+	const { sessionLoading, session } = useAuth();
+	const { navTheme } = useThemeMode();
 
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
+	if (sessionLoading) {
+		return (
+			<View style={[styles.container, styles.center, { backgroundColor: navTheme.colors.background }]}> 
+				<ActivityIndicator size="large" color={navTheme.colors.text} />
+			</View>
+		);
+	}
 
-registerRootComponent(App);
+	return session ? <Tabs /> : <AuthScreen />;
+}
+
+const styles = StyleSheet.create({
+	container: { flex: 1 },
+	center: { alignItems: 'center', justifyContent: 'center' },
+});
