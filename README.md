@@ -103,8 +103,8 @@ Framez is a simple, Instagram-inspired social app built with Expo (React Native)
 
 - Android APK builds:
   - Development (internal): `eas build -p android --profile development`
-  - Preview (internal): `eas build -p android --profile preview`
-  - Production APK: `eas build -p android --profile production-apk`
+  - Preview (internal): `eas build -p android --profile previeweas build -p android --profile production-apk`
+  - Production APK: ``
 
 - iOS builds:
   - `eas build -p ios --profile production` (requires Apple credentials)

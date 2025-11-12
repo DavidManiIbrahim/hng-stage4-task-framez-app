@@ -20,7 +20,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.ibrahimdavid.hngstage4taskframezapp"
+      "package": "com.mhanee001.hngstage4taskframezapp"
     },
     "web": {
       "output": "static",
@@ -48,9 +48,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "bae4f61b-f275-4705-804e-fd04c948b34e"
+        "projectId": "a6208319-c260-4690-8467-84dcea1864fe"
       }
     },
-    "owner": "ibrahimdavid"
+    "owner": ""
   }
 }
