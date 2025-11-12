@@ -1,5 +1,4 @@
-import React from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useAuth } from './context/AuthContext';
 import { useThemeMode } from './context/ThemeContext';
 import Tabs from './navigation/Tabs';

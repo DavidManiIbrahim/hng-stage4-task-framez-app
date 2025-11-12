@@ -1,5 +1,4 @@
 import 'react-native-gesture-handler';
-import { StyleSheet } from 'react-native';
 
 // With expo-router the routing is file-based under the `app/` folder.
 // The providers and error boundary are placed in `app/_layout.js` so this App.js
