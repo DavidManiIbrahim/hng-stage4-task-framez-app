@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ImageBackground, TouchableOpacity, Animated } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { useThemeMode } from '../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Button, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useThemeMode } from '../context/ThemeContext';
 
 export default function AuthScreen() {
   const { signIn, signUp } = useAuth();

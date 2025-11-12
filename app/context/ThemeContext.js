@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import { DarkTheme as NavDark, DefaultTheme as NavLight } from '@react-navigation/native';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
-import { DefaultTheme as NavLight, DarkTheme as NavDark } from '@react-navigation/native';
 
 const ThemeContext = createContext({
   theme: 'light',

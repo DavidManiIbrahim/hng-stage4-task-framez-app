@@ -1,10 +1,9 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FeedScreen from '../screens/FeedScreen';
-import CreatePostScreen from '../screens/CreatePostScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useThemeMode } from '../context/ThemeContext';
+import CreatePostScreen from '../screens/CreatePostScreen';
+import FeedScreen from '../screens/FeedScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 

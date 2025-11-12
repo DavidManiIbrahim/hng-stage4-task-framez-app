@@ -1,11 +1,12 @@
-import 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import Tabs from './navigation/Tabs';
+import { StatusBar } from 'expo-status-bar';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import 'react-native-gesture-handler';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import AuthScreen from './screens/AuthScreen';
 import { ThemeProvider, useThemeMode } from './context/ThemeContext';
+import Tabs from './navigation/Tabs';
+import AuthScreen from './screens/AuthScreen';
 
 function Root() {
   const { sessionLoading, session } = useAuth();
@@ -28,12 +29,14 @@ function Root() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <Root />
-        <StatusBar style="auto" />
-      </AuthProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <Root />
+          <StatusBar style="auto" />
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

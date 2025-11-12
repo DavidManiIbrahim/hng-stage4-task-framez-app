@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, Button, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { useAuth } from '../context/AuthContext';
-import { supabase, AVATARS_BUCKET } from '../lib/supabase';
 import { useTheme } from '@react-navigation/native';
 import dayjs from 'dayjs';
+import * as ImagePicker from 'expo-image-picker';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, Button, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { useAuth } from '../context/AuthContext';
+import { AVATARS_BUCKET, supabase } from '../lib/supabase';
 
 function PostItem({ item }) {
   return (

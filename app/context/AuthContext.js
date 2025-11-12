@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
 
@@ -20,21 +20,28 @@ export function AuthProvider({ children }) {
       try {
         const { data } = await supabase.auth.getSession();
         if (!mounted) return;
-        setSession(data.session);
+        setSession(data?.session || null);
       } catch (e) {
         console.warn('Auth session load failed:', e?.message || e);
+        if (mounted) setSession(null);
       } finally {
         if (mounted) setSessionLoading(false);
       }
     })();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, sess) => {
-      setSession(sess);
-    });
+    let unsubscribe;
+    try {
+      const { data: authListener } = supabase.auth.onAuthStateChange((_event, sess) => {
+        if (mounted) setSession(sess || null);
+      });
+      unsubscribe = authListener?.subscription;
+    } catch (e) {
+      console.warn('Auth listener setup failed:', e?.message || e);
+    }
 
     return () => {
       mounted = false;
-      authListener.subscription?.unsubscribe();
+      unsubscribe?.unsubscribe?.();
     };
   }, []);
 
