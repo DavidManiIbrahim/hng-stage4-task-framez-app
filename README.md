@@ -1,50 +1,143 @@
-# Welcome to your Expo app 👋
+# Framez
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Framez is a simple, Instagram-inspired social app built with Expo (React Native) and Supabase. It supports authentication, a public feed, creating posts with optional images, user profiles with avatars, and secure storage via Supabase buckets.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Authentication: sign up, login, logout with persistent sessions
+- Public feed: view all posts with author name, timestamp, text, and image
+- Create posts: write text and attach an image from the gallery
+- Profile: see your name, email, avatar, and your posts
+- Change avatar: upload and update your profile picture
+- Dark mode: toggle light/dark theme via the header button
+- Realtime-ready: Supabase Realtime enabled on `posts` table
+- RLS-secure: Row Level Security for tables and storage objects
+
+## Tech Stack
+
+- Expo + React Native
+- Supabase (Auth, Postgres, Storage, Realtime)
+- Day.js for date formatting
+
+## Getting Started
+
+1. Clone and install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Configure environment variables:
+
+   - Copy `.env.example` to `.env` and set your project values.
+   - Required:
+     - `EXPO_PUBLIC_SUPABASE_URL`
+     - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+   - Optional (with defaults in code):
+     - `EXPO_PUBLIC_POSTS_BUCKET` (default `posts`)
+     - `EXPO_PUBLIC_AVATARS_BUCKET` (default `avatars`)
+
+3. Set up Supabase schema:
+
+   - In the Supabase Dashboard, open SQL editor and run:
+     - `supabase/schema.sql` (full schema + bucket)
+     - `supabase/rls.sql` (RLS policies for tables and storage)
+     - `supabase/derived_from_app.sql` (derived tables/views from app logic)
+     - `supabase/avatars.sql` (avatars table with default avatars)
+     - Alternatively, you can run `supabase/posts_minimal.sql` then `supabase/rls.sql`.
+
+4. Start the app:
 
    ```bash
-   npx expo start
+   npx expo start 
    ```
 
-In the output, you'll find options to open the app in a
+   - Web: open `http://localhost:8081/`
+   - Expo Go (mobile): scan the QR from the terminal (use the IP shown).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+5. Optional: Dark mode
+   - Use the header icon (moon/sun) to toggle the theme.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Usage
 
-## Get a fresh project
+- Sign up with email, password, and optional name (used as author name).
+- Login; the feed shows public posts.
+- Create a post from the Create tab; optionally attach an image.
+- Go to Profile to see your info and posts.
+- Tap Change Avatar to upload a new profile picture.
 
-When you're ready, run:
+## Supabase Schema
 
-```bash
-npm run reset-project
-```
+- `public.posts` table:
+  - `id bigint` (identity) primary key
+  - `user_id uuid` references `auth.users(id)`
+  - `author_name text`
+  - `content_text text`
+  - `image_url text`
+  - `created_at timestamptz` default `now()`
+  - Index `posts_created_at_idx` on `created_at desc`
+  - Realtime publication enabled
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- Storage buckets:
+  - `posts` (public) for post images
+  - `avatars` (public) for profile pictures
 
-## Learn more
+- RLS policies:
+  - `public.posts`: public select; authenticated insert; owner update/delete
+  - `storage.objects` for `posts` and `avatars` buckets:
+    - Public select limited to the bucket
+    - Authenticated insert limited to paths prefixed by the uploader’s UID (`<uid>/...`)
+    - Owner update/delete limited to their own objects under their UID prefix
 
-To learn more about developing your project with Expo, look at the following resources:
+## Deployment
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Expo Go: use the QR code from `npx expo start` to test on devices.
+- Appetize.io: build a web preview or use Expo-generated bundles to upload and share a live demo.
 
-## Join the community
+## Builds (EAS)
 
-Join our community of developers creating universal apps.
+- Prerequisites:
+  - Install CLI: `npm i -g eas-cli`
+  - Log in: `eas login`
+  - Link project: `eas init` (already configured via `extra.eas.projectId`)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Android APK builds:
+  - Development (internal): `eas build -p android --profile development`
+  - Preview (internal): `eas build -p android --profile preview`
+  - Production APK: `eas build -p android --profile production-apk`
+
+- iOS builds:
+  - `eas build -p ios --profile production` (requires Apple credentials)
+
+- Submit (optional):
+  - Configure `submit` in `eas.json` and run: `eas submit -p android --profile production`
+
+Profiles are defined in `eas.json`. `production-apk` is added specifically to generate a distributable APK for Android.
+
+## Troubleshooting (Android)
+
+- App opens then closes on device:
+  - Ensure environment variables are provided at build-time (EAS Secrets):
+    - `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value <url>`
+    - `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_ANON_KEY --value <key>`
+  - Disable New Architecture (done): `app.json` has `"newArchEnabled": false`.
+  - Rebuild with: `eas build -p android --profile production-apk`.
+  - Inspect logs via `adb logcat` to identify native crashes.
+
+- Upload errors to Storage:
+  - Create buckets and policies using SQL files in `supabase/` (`avatars_bucket.sql`, `rls.sql`).
+
+
+## Backend Choice
+
+- Backend: Supabase (Auth, Postgres, Storage, Realtime)
+- Rationale: rapid setup, first-class auth and storage with simple client SDK.
+
+## Assets & Icons
+
+- App icon: `assets/icon.png` (square, recommended 1024×1024). Used for both iOS and Android builds via `ios.icon` and `android.icon` in `app.json`.
+- Android adaptive icon: `assets/adaptive-icon.png` (transparent foreground with background color in `app.json`).
+- Splash image: `assets/splash-icon.png` (`splash.image` with `resizeMode: contain`).
+- Web favicon: `assets/favicon.png`.
+
+To customize platform icons, replace the files above and adjust paths in `app.json`. Store marketing assets (App Store marketing icon, Play Store feature graphic) are uploaded directly in their respective consoles and aren’t controlled via `app.json`.
