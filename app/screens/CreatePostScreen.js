@@ -1,9 +1,9 @@
+import React, { useState } from 'react';
+import { View, TextInput, Button, Image, StyleSheet, Alert } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
-import { Alert, Button, Image, StyleSheet, TextInput, View } from 'react-native';
+import { supabase, POSTS_BUCKET } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { POSTS_BUCKET, supabase } from '../lib/supabase';
 
 async function pickImageAsync() {
   const result = await ImagePicker.launchImageLibraryAsync({

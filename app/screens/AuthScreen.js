@@ -1,14 +1,11 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Button, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Button, ImageBackground, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
-import { useThemeMode } from '../context/ThemeContext';
 
 export default function AuthScreen() {
   const { signIn, signUp } = useAuth();
   const { colors, dark } = useTheme();
-  const { toggleTheme } = useThemeMode();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -33,9 +30,6 @@ export default function AuthScreen() {
       <View style={styles.overlay} />
       <View style={styles.topBar}>
         <Text style={[styles.brand, { color: '#fff' }]}>Framez</Text>
-        <TouchableOpacity onPress={toggleTheme} activeOpacity={0.8}>
-          <Ionicons name={dark ? 'sunny' : 'moon'} size={24} color={'#fff'} />
-        </TouchableOpacity>
       </View>
 
       <Animated.View style={[styles.container, { backgroundColor: dark ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.85)' }, { opacity: fade, transform: [{ translateY: slide }] }]}>
