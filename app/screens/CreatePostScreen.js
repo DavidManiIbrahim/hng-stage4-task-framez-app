@@ -31,10 +31,10 @@ export default function CreatePostScreen() {
     const fileExt = image.uri.split('.').pop();
     const filePath = `${session.user.id}/${Date.now()}.${fileExt || 'jpg'}`;
     const resp = await fetch(image.uri);
-    const blob = await resp.blob();
+    const arrayBuffer = await resp.arrayBuffer();
     const { data, error } = await supabase.storage
       .from(POSTS_BUCKET)
-      .upload(filePath, blob, { contentType: image.mimeType || 'image/jpeg', upsert: true });
+      .upload(filePath, arrayBuffer, { contentType: image.mimeType || 'image/jpeg', upsert: true });
     if (error) {
       Alert.alert('Upload error', error.message + '\nEnsure a public bucket named "posts" exists.');
       return null;

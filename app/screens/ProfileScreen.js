@@ -64,11 +64,13 @@ export default function ProfileScreen() {
       if (!asset) return;
       const fileExt = asset.uri.split('.').pop();
       const filePath = `${session.user.id}/avatar_${Date.now()}.${fileExt || 'jpg'}`;
-      const resp = await fetch(asset.uri);
-      const blob = await resp.blob();
       const { data, error } = await supabase.storage
         .from(AVATARS_BUCKET)
-        .upload(filePath, blob, {
+        .upload(filePath, {
+          uri: asset.uri,
+          type: asset.mimeType || 'image/jpeg',
+          name: filePath.split('/').pop(),
+        }, {
           contentType: asset.mimeType || 'image/jpeg',
           upsert: true,
         });
